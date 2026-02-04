@@ -1,0 +1,32 @@
+[
+    {
+        "spicies": "cat",
+        "health": 10,
+        "hunger": 10,
+        "happiness": 10
+    },
+    {
+        "spicies": "dog",
+        "health": 10,
+        "hunger": 10,
+        "happiness": 10
+    },
+    {
+        "spicies": "parrot",
+        "health": 10,
+        "hunger": 10,
+        "happiness": 10
+    },
+    {
+        "spicies": "capybara",
+        "health": 10,
+        "hunger": 10,
+        "happiness": 10
+    },
+    {
+        "spicies": "humster",
+        "health": 10,
+        "hunger": 10,
+        "happiness": 10
+    }
+]
