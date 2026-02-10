@@ -8,21 +8,16 @@ pets = json.load(x)
 names = {}
 
 class pet:
-    all = []
     def __init__(self, name, spicies, health, hunger, happiness):
         self.name = name
         self.spicies = spicies
         self.health = health
         self.hunger = hunger
         self.happiness = happiness
-        pet.all.append(self)
 
 
-def createPet(pet, name):
-    for p in pet.all:
-        if p.name == name:
-            return False
-    names[name] = pet(name, pet["spicies"], pet["health"], pet["hunger"], pet["happieness"])
+def createPet(tPet, name):
+    names[name] = pet(name, tPet["spicies"], tPet["health"], tPet["hunger"], tPet["happieness"])
     return names[name]
 
 def getRandom():
@@ -42,22 +37,31 @@ def clear():
     for widget in root.winfo_children():
         widget.destroy()
 
+def gr(wid, row, col):
+    wid.grid(row = row, column = col)
+
 def start1():
     l.destroy()
     b.destroy()
     v = tk.Label(root, text = "Your pet is...")
     v.grid(row=0, column=0)
-    root.after(4000)
-    p = tk.Label(root, text= "{x}!!!".format(x = (rd.choice(pets))["spicies"]))
+    thePet = rd.choice(pets)
+    p = tk.Label(root, text= "{x}!!!".format(x = thePet["spicies"].capitalize()))
     p.grid(row=1, column=0)
-    root.after(3000)
     c = tk.Button(root, text="Continue", command=start2)
     c.grid(row=3,column=0)
 
 def start2():
     clear()
+    l = tk.Label(root, text = "Name them!")
+    gr(l, 0, 0)
+    entry = tk.Entry(root)
+    gr(entry, 1,0)
+    bt = tk.Button(root, text = "Name", command = main)
+    gr(bt, 2,0)
 
 def main():
+    createPet()
     changeStats()
     
 
