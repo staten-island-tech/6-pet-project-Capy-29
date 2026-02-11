@@ -17,21 +17,23 @@ class pet:
 
 
 def createPet(tPet, name):
-    names[name] = pet(name, tPet["spicies"], tPet["health"], tPet["hunger"], tPet["happieness"])
+    names[name] = pet(name, tPet["spicies"], tPet["health"], tPet["hunger"], tPet["happiness"])
     return names[name]
 
 def getRandom():
     return rd.choice(pets)
 
-async def changeStats():
-    while True:
-        while len(pet.all):
-            time.sleep(60)
-            chHnr = rd.randrange(0,2,1)
-            chHpn = rd.randrange(0,2,1)
-            for p in pet.all:
-                p.hunger = p.hunger - chHnr
-                p.happiness = p.happiness - chHpn
+def updateStats():
+    chHnr = rd.randrange(0,2,1)
+    chHpn = rd.randrange(0,2,1)
+    names[entry].hunger = names[entry].hunger - chHnr
+    names[entry].happiness = names[entry].happiness - chHpn
+    if names[entry].hunger < 0:
+        names[entry].hunger = 0
+        names[entry].health = names[entry].health - chHnr
+    if names[entry].happiness < 0:
+        names[entry].happiness = 0
+        names[entry].health = names[entry].health - chHpn
 
 def clear():
     for widget in root.winfo_children():
@@ -45,6 +47,7 @@ def start1():
     b.destroy()
     v = tk.Label(root, text = "Your pet is...")
     v.grid(row=0, column=0)
+    global thePet
     thePet = rd.choice(pets)
     p = tk.Label(root, text= "{x}!!!".format(x = thePet["spicies"].capitalize()))
     p.grid(row=1, column=0)
@@ -55,14 +58,34 @@ def start2():
     clear()
     l = tk.Label(root, text = "Name them!")
     gr(l, 0, 0)
+    global entry
     entry = tk.Entry(root)
     gr(entry, 1,0)
     bt = tk.Button(root, text = "Name", command = main)
     gr(bt, 2,0)
 
 def main():
-    createPet()
-    changeStats()
+    print(entry)
+    clear()
+    createPet(thePet, entry)
+    name = tk.Label(root, text="name: {}".format(names[entry].name))
+    gr(name, 0,0)
+    spicies = tk.Label(root, text = "spicies: {}".format(names[entry].spicies))
+    gr(spicies, 1,0)
+    health = tk.Label(root, text = "health: {}".format(names[entry].health))
+    gr(health, 2,0)
+    hunger = tk.Label(root, text = "hunger: {}".format(names[entry].hunger))
+    gr(hunger,3,0)
+    happiness = tk.Label(root, text = "happiness: {}".format(names[entry].happiness))
+    gr(happiness,4,0)
+    #while True:
+        #time.sleep(60)
+        #updateStats()
+        #name.config(text="name: {}".format(names[entry].name))
+        #spicies.config(text = "spicies: {}".format(names[entry].spicies))
+        #health.config(text = "health: {}".format(names[entry].health))
+        #hunger.config(text = "hunger: {}".format(names[entry].hunger))
+        #happiness.config(text = "happiness: {}".format(names[entry].happiness))
     
 
 
