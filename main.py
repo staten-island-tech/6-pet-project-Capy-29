@@ -26,14 +26,20 @@ def getRandom():
 def updateStats():
     chHnr = rd.randrange(0,2,1)
     chHpn = rd.randrange(0,2,1)
-    names[entry].hunger = names[entry].hunger - chHnr
-    names[entry].happiness = names[entry].happiness - chHpn
-    if names[entry].hunger < 0:
-        names[entry].hunger = 0
-        names[entry].health = names[entry].health - chHnr
-    if names[entry].happiness < 0:
-        names[entry].happiness = 0
-        names[entry].health = names[entry].health - chHpn
+    names[petName].hunger = names[petName].hunger - chHnr
+    names[petName].happiness = names[petName].happiness - chHpn
+    if names[petName].hunger < 0:
+        names[petName].hunger = 0
+        names[petName].health = names[petName].health - chHnr
+    if names[petName].happiness < 0:
+        names[petName].happiness = 0
+        names[petName].health = names[petName].health - chHpn
+    
+    main.name.config(text="name: {}".format(names[petName].name))
+    spicies.config(text = "spicies: {}".format(names[petName].spicies))
+    health.config(text = "health: {}".format(names[petName].health))
+    hunger.config(text = "hunger: {}".format(names[petName].hunger))
+    happiness.config(text = "happiness: {}".format(names[petName].happiness))
 
 def clear():
     for widget in root.winfo_children():
@@ -58,35 +64,37 @@ def start2():
     clear()
     l = tk.Label(root, text = "Name them!")
     gr(l, 0, 0)
-    global entry
-    entry = tk.Entry(root)
-    gr(entry, 1,0)
+    global en
+    en = tk.Entry(root)
+    gr(en, 1,0)
     bt = tk.Button(root, text = "Name", command = main)
     gr(bt, 2,0)
 
+
 def main():
-    print(entry)
+    global petName
+    global name
+    global spicies
+    global health
+    global hunger
+    global happiness
+    petName = en.get()
     clear()
-    createPet(thePet, entry)
-    name = tk.Label(root, text="name: {}".format(names[entry].name))
-    gr(name, 0,0)
-    spicies = tk.Label(root, text = "spicies: {}".format(names[entry].spicies))
-    gr(spicies, 1,0)
-    health = tk.Label(root, text = "health: {}".format(names[entry].health))
-    gr(health, 2,0)
-    hunger = tk.Label(root, text = "hunger: {}".format(names[entry].hunger))
-    gr(hunger,3,0)
-    happiness = tk.Label(root, text = "happiness: {}".format(names[entry].happiness))
-    gr(happiness,4,0)
-    #while True:
-        #time.sleep(60)
-        #updateStats()
-        #name.config(text="name: {}".format(names[entry].name))
-        #spicies.config(text = "spicies: {}".format(names[entry].spicies))
-        #health.config(text = "health: {}".format(names[entry].health))
-        #hunger.config(text = "hunger: {}".format(names[entry].hunger))
-        #happiness.config(text = "happiness: {}".format(names[entry].happiness))
     
+    createPet(thePet, petName)
+    name = tk.Label(root, text="Name: {}".format(names[petName].name))
+    gr(name, 0,0)
+    spicies = tk.Label(root, text = "Spicies: {}".format(names[petName].spicies))
+    gr(spicies, 1,0)
+    health = tk.Label(root, text = "Health: {}".format(names[petName].health))
+    gr(health, 2,0)
+    hunger = tk.Label(root, text = "Hunger: {}".format(names[petName].hunger))
+    gr(hunger,3,0)
+    happiness = tk.Label(root, text = "Happiness: {}".format(names[petName].happiness))
+    gr(happiness,4,0)
+    root.update_idletasks()
+    while True:
+        root.after(10000, updateStats)
 
 
 root = tk.Tk()
