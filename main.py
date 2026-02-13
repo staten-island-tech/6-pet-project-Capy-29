@@ -2,6 +2,7 @@ import json
 import time
 import random as rd
 import tkinter as tk
+import asyncio
 
 x = open("./pets.json", encoding="utf8")
 pets = json.load(x)
@@ -23,23 +24,36 @@ def createPet(tPet, name):
 def getRandom():
     return rd.choice(pets)
 
-def updateStats():
-    chHnr = rd.randrange(0,2,1)
-    chHpn = rd.randrange(0,2,1)
-    names[petName].hunger = names[petName].hunger - chHnr
-    names[petName].happiness = names[petName].happiness - chHpn
-    if names[petName].hunger < 0:
-        names[petName].hunger = 0
-        names[petName].health = names[petName].health - chHnr
-    if names[petName].happiness < 0:
-        names[petName].happiness = 0
-        names[petName].health = names[petName].health - chHpn
+async def updateStats():
+    while True:
+        print("ran")
+        time.sleep(10)
+        chHnr = rd.randrange(0,2,1)
+        chHpn = rd.randrange(0,2,1)
+        names[petName].hunger = names[petName].hunger - chHnr
+        names[petName].happiness = names[petName].happiness - chHpn
+        if names[petName].hunger < 0:
+            names[petName].hunger = 0
+            names[petName].health = names[petName].health - chHnr
+        if names[petName].happiness < 0:
+            names[petName].happiness = 0
+            names[petName].health = names[petName].health - chHpn
     
-    main.name.config(text="name: {}".format(names[petName].name))
-    spicies.config(text = "spicies: {}".format(names[petName].spicies))
-    health.config(text = "health: {}".format(names[petName].health))
-    hunger.config(text = "hunger: {}".format(names[petName].hunger))
+def doPet():
+    chHpn = rd.randrange(0,2,1)
+    names[petName].happiness = names[petName].happiness + chHpn
+    if names[petName].happiness > 10:
+        names[petName].happiness = 10
     happiness.config(text = "happiness: {}".format(names[petName].happiness))
+    root.update()
+
+def doFeed():
+    chHnr = rd.randrange(0,2,1)
+    names[petName].hunger = names[petName].hunger + chHnr
+    if names[petName].hunger > 10:
+        names[petName].hunger = 10
+    hunger.config(text = "hunger: {}".format(names[petName].hunger))
+    root.update()
 
 def clear():
     for widget in root.winfo_children():
@@ -53,10 +67,14 @@ def start1():
     b.destroy()
     v = tk.Label(root, text = "Your pet is...")
     v.grid(row=0, column=0)
+    root.update()
+    time.sleep(2)
     global thePet
     thePet = rd.choice(pets)
     p = tk.Label(root, text= "{x}!!!".format(x = thePet["spicies"].capitalize()))
     p.grid(row=1, column=0)
+    root.update()
+    time.sleep(1)
     c = tk.Button(root, text="Continue", command=start2)
     c.grid(row=3,column=0)
 
@@ -92,10 +110,21 @@ def main():
     gr(hunger,3,0)
     happiness = tk.Label(root, text = "Happiness: {}".format(names[petName].happiness))
     gr(happiness,4,0)
-    root.update_idletasks()
+    petBt = tk.Button(root, text = "Pet", command = doPet)
+    gr(petBt, 5,0)
+    feedBt = tk.Button(root, text = "Feed", command = doFeed)
+    gr(feedBt, 6,0)
+    root.update()
+    asyncio.run(updateStats())
     while True:
-        root.after(10000, updateStats)
-
+        time.sleep(0.2)
+        name.config(text="name: {}".format(names[petName].name))
+        spicies.config(text = "spicies: {}".format(names[petName].spicies))
+        health.config(text = "health: {}".format(names[petName].health))
+        hunger.config(text = "hunger: {}".format(names[petName].hunger))
+        happiness.config(text = "happiness: {}".format(names[petName].happiness))
+        root.update()
+        print("1")
 
 root = tk.Tk()
 
