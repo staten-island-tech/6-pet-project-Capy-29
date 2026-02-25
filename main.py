@@ -24,36 +24,43 @@ def createPet(tPet, name):
 def getRandom():
     return rd.choice(pets)
 
+def changeStats():
+    health.config(text = "health: {}".format(names[petName].health))
+    hunger.config(text = "hunger: {}".format(names[petName].hunger))
+    happiness.config(text = "happiness: {}".format(names[petName].happiness))
+    root.update()
+
 async def updateStats():
     while True:
-        print("ran")
-        time.sleep(10)
-        chHnr = rd.randrange(0,2,1)
-        chHpn = rd.randrange(0,2,1)
-        names[petName].hunger = names[petName].hunger - chHnr
-        names[petName].happiness = names[petName].happiness - chHpn
-        if names[petName].hunger < 0:
-            names[petName].hunger = 0
-            names[petName].health = names[petName].health - chHnr
-        if names[petName].happiness < 0:
-            names[petName].happiness = 0
-            names[petName].health = names[petName].health - chHpn
+        if names[petName].health > 0:
+            await asyncio.sleep(0.2)
+            if rd.random() < 0.1:
+                chHnr = rd.randrange(0,2,1)
+                chHpn = rd.randrange(0,2,1)
+                names[petName].hunger = names[petName].hunger - chHnr
+                names[petName].happiness = names[petName].happiness - chHpn
+                if names[petName].hunger < 0:
+                    names[petName].hunger = 0
+                    names[petName].health = names[petName].health - chHnr
+                if names[petName].happiness < 0:
+                    names[petName].happiness = 0
+                    names[petName].health = names[petName].health - chHpn
+        else:
+            death()
+        changeStats()
+        
     
 def doPet():
     chHpn = rd.randrange(0,2,1)
     names[petName].happiness = names[petName].happiness + chHpn
     if names[petName].happiness > 10:
         names[petName].happiness = 10
-    happiness.config(text = "happiness: {}".format(names[petName].happiness))
-    root.update()
 
 def doFeed():
     chHnr = rd.randrange(0,2,1)
     names[petName].hunger = names[petName].hunger + chHnr
     if names[petName].hunger > 10:
         names[petName].hunger = 10
-    hunger.config(text = "hunger: {}".format(names[petName].hunger))
-    root.update()
 
 def clear():
     for widget in root.winfo_children():
@@ -116,15 +123,9 @@ def main():
     gr(feedBt, 6,0)
     root.update()
     asyncio.run(updateStats())
-    while True:
-        time.sleep(0.2)
-        name.config(text="name: {}".format(names[petName].name))
-        spicies.config(text = "spicies: {}".format(names[petName].spicies))
-        health.config(text = "health: {}".format(names[petName].health))
-        hunger.config(text = "hunger: {}".format(names[petName].hunger))
-        happiness.config(text = "happiness: {}".format(names[petName].happiness))
-        root.update()
-        print("1")
+
+def death():
+    clear()
 
 root = tk.Tk()
 
