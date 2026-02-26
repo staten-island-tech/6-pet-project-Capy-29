@@ -8,6 +8,10 @@ x = open("./pets.json", encoding="utf8")
 pets = json.load(x)
 names = {}
 
+score = 0
+winScore = 100
+level = 1
+
 class pet:
     def __init__(self, name, spicies, health, hunger, happiness):
         self.name = name
@@ -28,13 +32,15 @@ def changeStats():
     health.config(text = "health: {}".format(names[petName].health))
     hunger.config(text = "hunger: {}".format(names[petName].hunger))
     happiness.config(text = "happiness: {}".format(names[petName].happiness))
+    value.config(text=f"Score: {score} / {winScore * level}")
     root.update()
+    scoreW.update()
 
 async def updateStats():
     while True:
         if names[petName].health > 0:
             await asyncio.sleep(0.2)
-            if rd.random() < 0.1:
+            if rd.random() < 0.2 * level:
                 chHnr = rd.randrange(0,2,1)
                 chHpn = rd.randrange(0,2,1)
                 names[petName].hunger = names[petName].hunger - chHnr
@@ -47,6 +53,9 @@ async def updateStats():
                     names[petName].health = names[petName].health - chHpn
         else:
             death()
+            break
+        if score >= winScore * level:
+            victory()
         changeStats()
         
     
@@ -55,12 +64,14 @@ def doPet():
     names[petName].happiness = names[petName].happiness + chHpn
     if names[petName].happiness > 10:
         names[petName].happiness = 10
+    score = score + 1
 
 def doFeed():
     chHnr = rd.randrange(0,2,1)
     names[petName].hunger = names[petName].hunger + chHnr
     if names[petName].hunger > 10:
         names[petName].hunger = 10
+    score = score + 1
 
 def clear():
     for widget in root.winfo_children():
@@ -70,8 +81,7 @@ def gr(wid, row, col):
     wid.grid(row = row, column = col)
 
 def start1():
-    l.destroy()
-    b.destroy()
+    clear()
     v = tk.Label(root, text = "Your pet is...")
     v.grid(row=0, column=0)
     root.update()
@@ -103,8 +113,15 @@ def main():
     global health
     global hunger
     global happiness
+    global value
+    global scoreW
     petName = en.get()
     clear()
+
+    scoreW = tk.Tk()
+
+    value = tk.Label(scoreW, text=f"Score: {score} / {winScore * level}")
+    gr(value, 0,0)
     
     createPet(thePet, petName)
     name = tk.Label(root, text="Name: {}".format(names[petName].name))
@@ -126,6 +143,46 @@ def main():
 
 def death():
     clear()
+    itDied = tk.Label(root, text = f"{petName} has died")
+    gr(itDied, 0,0)
+    root.update()
+    time.sleep(1)
+    over = tk.Label(root, text = "Game Over")
+    gr(over, 1,0)
+    root.update()
+    time.sleep(1)
+    del names[petName]
+    score = 0
+    level = 1
+    restart = tk.Button(root, text = "restart", command = start1)
+    gr(restart,2,0)
+
+def victory():
+    clear()
+    if level >= 5:
+        a = tk.Label(root, text = f"Congradulations")
+        gr(a, 0,0)
+        root.update()
+        time.sleep(1)
+        b = tk.Label(root, text = f"You have beaten PetSim!")
+        gr(b, 0,0)
+        root.update()
+        time.sleep(1)
+        del names[petName]
+        score = 0
+        level += 1
+        c = tk.Button(root, text = "Next Level", command = start1)
+        gr(c,2,0)
+    else:
+        a = tk.Label(root, text = f"You Won")
+        gr(a, 0,0)
+        root.update()
+        time.sleep(1)
+        del names[petName]
+        score = 0
+        level += 1
+        c = tk.Button(root, text = "Next Level", command = start1)
+        gr(c,2,0)
 
 root = tk.Tk()
 
