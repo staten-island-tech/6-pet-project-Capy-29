@@ -3,13 +3,14 @@ import time
 import random as rd
 import tkinter as tk
 import asyncio
+import sys
 
 x = open("./pets.json", encoding="utf8")
 pets = json.load(x)
 names = {}
 
 score = 0
-winScore = 100
+winScore = 10
 level = 1
 
 class pet:
@@ -32,7 +33,7 @@ def changeStats():
     health.config(text = "health: {}".format(names[petName].health))
     hunger.config(text = "hunger: {}".format(names[petName].hunger))
     happiness.config(text = "happiness: {}".format(names[petName].happiness))
-    value.config(text=f"Score: {score} / {winScore * level}")
+    valueS.config(text=f"Score: {score} / {winScore * level}")
     root.update()
     scoreW.update()
 
@@ -56,10 +57,12 @@ async def updateStats():
             break
         if score >= winScore * level:
             victory()
+            break
         changeStats()
         
     
 def doPet():
+    global score
     chHpn = rd.randrange(0,2,1)
     names[petName].happiness = names[petName].happiness + chHpn
     if names[petName].happiness > 10:
@@ -67,6 +70,7 @@ def doPet():
     score = score + 1
 
 def doFeed():
+    global score
     chHnr = rd.randrange(0,2,1)
     names[petName].hunger = names[petName].hunger + chHnr
     if names[petName].hunger > 10:
@@ -113,16 +117,21 @@ def main():
     global health
     global hunger
     global happiness
-    global value
+    global valueS
+    global valueV
     global scoreW
-    petName = en.get()
-    clear()
 
     scoreW = tk.Tk()
 
-    value = tk.Label(scoreW, text=f"Score: {score} / {winScore * level}")
-    gr(value, 0,0)
-    
+    if level == 1:
+        
+        petName = en.get()
+        valueS = tk.Label(scoreW, text=f"Score: {score} / {winScore * level}")
+        gr(valueS, 0,0)
+        valueV = tk.Label(scoreW, text=f"Level: {level}")
+        gr(valueV, 1,0)
+    clear()
+
     createPet(thePet, petName)
     name = tk.Label(root, text="Name: {}".format(names[petName].name))
     gr(name, 0,0)
@@ -142,6 +151,8 @@ def main():
     asyncio.run(updateStats())
 
 def death():
+    global level
+    global score
     clear()
     itDied = tk.Label(root, text = f"{petName} has died")
     gr(itDied, 0,0)
@@ -159,6 +170,9 @@ def death():
 
 def victory():
     clear()
+    scoreW.destroy()
+    global level
+    global score
     if level >= 5:
         a = tk.Label(root, text = f"Congradulations")
         gr(a, 0,0)
@@ -168,20 +182,18 @@ def victory():
         gr(b, 0,0)
         root.update()
         time.sleep(1)
-        del names[petName]
         score = 0
         level += 1
-        c = tk.Button(root, text = "Next Level", command = start1)
+        c = tk.Button(root, text = "Close", command = sys.exit)
         gr(c,2,0)
     else:
         a = tk.Label(root, text = f"You Won")
         gr(a, 0,0)
         root.update()
         time.sleep(1)
-        del names[petName]
         score = 0
         level += 1
-        c = tk.Button(root, text = "Next Level", command = start1)
+        c = tk.Button(root, text = "Next Level", command = main)
         gr(c,2,0)
 
 root = tk.Tk()
