@@ -21,45 +21,42 @@ class pet:
         self.hunger = hunger
         self.happiness = happiness
 
+    async def updateStats(self):
+        while True:
+            if self.health > 0:
+                await asyncio.sleep(0.2)
+                if rd.random() < 0.2 * level:
+                    chHnr = rd.randrange(0,2,1)
+                    chHpn = rd.randrange(0,2,1)
+                    self.hunger = self.hunger - chHnr
+                    self.happiness = self.happiness - chHpn
+                    if self.hunger < 0:
+                        self.hunger = 0
+                        self.health = self.health - chHnr
+                    if self.happiness < 0:
+                        self.happiness = 0
+                        self.health = self.health - chHpn
+            else:
+                death()
+                break
+            if score >= winScore * level:
+                victory()
+                break
+            
+            health.config(text = "health: {}".format(names[petName].health))
+            hunger.config(text = "hunger: {}".format(names[petName].hunger))
+            happiness.config(text = "happiness: {}".format(names[petName].happiness))
+            valueS.config(text=f"Score: {score} / {winScore * level}")
+            root.update()
+            scoreW.update()
+
 
 def createPet(tPet, name):
     names[name] = pet(name, tPet["spicies"], tPet["health"], tPet["hunger"], tPet["happiness"])
     return names[name]
 
 def getRandom():
-    return rd.choice(pets)
-
-def changeStats():
-    health.config(text = "health: {}".format(names[petName].health))
-    hunger.config(text = "hunger: {}".format(names[petName].hunger))
-    happiness.config(text = "happiness: {}".format(names[petName].happiness))
-    valueS.config(text=f"Score: {score} / {winScore * level}")
-    root.update()
-    scoreW.update()
-
-async def updateStats():
-    while True:
-        if names[petName].health > 0:
-            await asyncio.sleep(0.2)
-            if rd.random() < 0.2 * level:
-                chHnr = rd.randrange(0,2,1)
-                chHpn = rd.randrange(0,2,1)
-                names[petName].hunger = names[petName].hunger - chHnr
-                names[petName].happiness = names[petName].happiness - chHpn
-                if names[petName].hunger < 0:
-                    names[petName].hunger = 0
-                    names[petName].health = names[petName].health - chHnr
-                if names[petName].happiness < 0:
-                    names[petName].happiness = 0
-                    names[petName].health = names[petName].health - chHpn
-        else:
-            death()
-            break
-        if score >= winScore * level:
-            victory()
-            break
-        changeStats()
-        
+    return rd.choice(pets) 
     
 def doPet():
     global score
@@ -106,12 +103,16 @@ def start2():
     global en
     en = tk.Entry(root)
     gr(en, 1,0)
-    bt = tk.Button(root, text = "Name", command = main)
+    bt = tk.Button(root, text = "Name", command = start3)
     gr(bt, 2,0)
 
+def start3():
+    global petName
+    petName = en.get()
+    main()
 
 def main():
-    global petName
+    createPet(thePet, petName)
     global name
     global spicies
     global health
@@ -122,17 +123,13 @@ def main():
     global scoreW
 
     scoreW = tk.Tk()
-
-    if level == 1:
-        
-        petName = en.get()
-        valueS = tk.Label(scoreW, text=f"Score: {score} / {winScore * level}")
-        gr(valueS, 0,0)
-        valueV = tk.Label(scoreW, text=f"Level: {level}")
-        gr(valueV, 1,0)
+    
+    valueS = tk.Label(scoreW, text=f"Score: {score} / {winScore * level}")
+    gr(valueS, 0,0)
+    valueV = tk.Label(scoreW, text=f"Level: {level}")
+    gr(valueV, 1,0)
     clear()
-
-    createPet(thePet, petName)
+    
     name = tk.Label(root, text="Name: {}".format(names[petName].name))
     gr(name, 0,0)
     spicies = tk.Label(root, text = "Spicies: {}".format(names[petName].spicies))
@@ -148,12 +145,13 @@ def main():
     feedBt = tk.Button(root, text = "Feed", command = doFeed)
     gr(feedBt, 6,0)
     root.update()
-    asyncio.run(updateStats())
+    asyncio.run(names[petName].updateStats())
 
 def death():
     global level
     global score
     clear()
+    scoreW.destroy()
     itDied = tk.Label(root, text = f"{petName} has died")
     gr(itDied, 0,0)
     root.update()
@@ -170,6 +168,7 @@ def death():
 
 def victory():
     clear()
+    del names[petName]
     scoreW.destroy()
     global level
     global score

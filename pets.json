@@ -2,30 +2,30 @@
     {
         "spicies": "cat",
         "health": 10,
-        "hunger": 10,
+        "hunger": 20,
         "happiness": 10
     },
     {
         "spicies": "dog",
-        "health": 10,
-        "hunger": 10,
-        "happiness": 10
+        "health": 15,
+        "hunger": 15,
+        "happiness": 20
     },
     {
         "spicies": "parrot",
-        "health": 10,
+        "health": 5,
         "hunger": 10,
-        "happiness": 10
+        "happiness": 15
     },
     {
         "spicies": "capybara",
-        "health": 10,
-        "hunger": 10,
-        "happiness": 10
+        "health": 20,
+        "hunger": 5,
+        "happiness": 25
     },
     {
         "spicies": "humster",
-        "health": 10,
+        "health": 5,
         "hunger": 10,
         "happiness": 10
     }
