@@ -49,6 +49,22 @@ class pet:
             valueS.config(text=f"Score: {score} / {winScore * level}")
             root.update()
             scoreW.update()
+    
+    def doPet(self):
+        global score
+        chHpn = rd.randrange(0,2,1)
+        self.happiness = self.happiness + chHpn
+        if self.happiness > 10:
+            self.happiness = 10
+        score = score + 1
+
+    def doFeed(self):
+        global score
+        chHnr = rd.randrange(0,2,1)
+        self.hunger = self.hunger + chHnr
+        if self.hunger > 10:
+            self.hunger = 10
+        score = score + 1
 
 
 def createPet(tPet, name):
@@ -57,22 +73,6 @@ def createPet(tPet, name):
 
 def getRandom():
     return rd.choice(pets) 
-    
-def doPet():
-    global score
-    chHpn = rd.randrange(0,2,1)
-    names[petName].happiness = names[petName].happiness + chHpn
-    if names[petName].happiness > 10:
-        names[petName].happiness = 10
-    score = score + 1
-
-def doFeed():
-    global score
-    chHnr = rd.randrange(0,2,1)
-    names[petName].hunger = names[petName].hunger + chHnr
-    if names[petName].hunger > 10:
-        names[petName].hunger = 10
-    score = score + 1
 
 def clear():
     for widget in root.winfo_children():
@@ -140,9 +140,9 @@ def main():
     gr(hunger,3,0)
     happiness = tk.Label(root, text = "Happiness: {}".format(names[petName].happiness))
     gr(happiness,4,0)
-    petBt = tk.Button(root, text = "Pet", command = doPet)
+    petBt = tk.Button(root, text = "Pet", command = names[petName].doPet)
     gr(petBt, 5,0)
-    feedBt = tk.Button(root, text = "Feed", command = doFeed)
+    feedBt = tk.Button(root, text = "Feed", command = names[petName].doFeed)
     gr(feedBt, 6,0)
     root.update()
     asyncio.run(names[petName].updateStats())
